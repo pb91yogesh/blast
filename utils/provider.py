@@ -15,7 +15,7 @@ class APIProvider:
             PROVIDERS = json.load(open('apidata.json', 'r'))
         except Exception:
             PROVIDERS = requests.get(
-                "https://raw.githubusercontent.com/yogeshpcte/blast/21c6073fbed0c5583a0753cf4dd89315b9ffa141/apidata.json"
+                "https://github.com/yogeshpcte/blast/raw/main/apidata.json"
             ).json()
         self.config = None
         self.cc = cc
