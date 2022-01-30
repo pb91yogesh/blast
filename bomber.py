@@ -53,8 +53,7 @@ def clr():
 def bann_text():
     clr()
     logo = """
-  
-██████╗░██╗░░░░░░█████╗░░██████╗████████╗
+ ██████╗░██╗░░░░░░█████╗░░██████╗████████╗
 ██╔══██╗██║░░░░░██╔══██╗██╔════╝╚══██╔══╝
 ██████╦╝██║░░░░░███████║╚█████╗░░░░██║░░░
 ██╔══██╗██║░░░░░██╔══██║░╚═══██╗░░░██║░░░
@@ -88,11 +87,11 @@ def format_phone(num):
 def do_zip_update():
     success = False
     if DEBUG_MODE:
-        zip_url = "https://github.com/TheSpeedX/TBomb/archive/dev.zip"
-        dir_name = "TBomb-dev"
+        zip_url = "https://github.com/yogeshpcte/blast/archive/dev.zip"
+        dir_name = "blast-dev"
     else:
-        zip_url = "https://github.com/TheSpeedX/TBomb/archive/master.zip"
-        dir_name = "TBomb-master"
+        zip_url = "https://github.com/yogeshpcte/blast/archive/master.zip"
+        dir_name = "blast-master"
     print(ALL_COLORS[0]+"Downloading ZIP ... "+RESET_ALL)
     response = requests.get(zip_url)
     if response.status_code == 200:
@@ -114,13 +113,13 @@ def do_zip_update():
         except Exception:
             mesgdcrt.FailureMessage("Error occured while extracting !!")
     if success:
-        mesgdcrt.SuccessMessage("TBomb was updated to the latest version")
+        mesgdcrt.SuccessMessage("blast was updated to the latest version")
         mesgdcrt.GeneralMessage(
             "Please run the script again to load the latest version")
     else:
-        mesgdcrt.FailureMessage("Unable to update TBomb.")
+        mesgdcrt.FailureMessage("Unable to update blast.")
         mesgdcrt.WarningMessage(
-            "Grab The Latest one From https://github.com/TheSpeedX/TBomb.git")
+            "Grab The Latest one From https://github.com/yogeshpcte/blast.git")
 
     sys.exit()
 
@@ -145,16 +144,16 @@ def do_git_update():
     print("\n")
 
     if success:
-        mesgdcrt.SuccessMessage("TBomb was updated to the latest version")
+        mesgdcrt.SuccessMessage("blast was updated to the latest version")
         mesgdcrt.GeneralMessage(
             "Please run the script again to load the latest version")
     else:
-        mesgdcrt.FailureMessage("Unable to update TBomb.")
+        mesgdcrt.FailureMessage("Unable to update blast.")
         mesgdcrt.WarningMessage("Make Sure To Install 'git' ")
         mesgdcrt.GeneralMessage("Then run command:")
         print(
             "git checkout . && "
-            "git pull https://github.com/TheSpeedX/TBomb.git HEAD")
+            "git pull https://github.com/yogeshpcte/blast.git HEAD")
     sys.exit()
 
 
@@ -172,23 +171,23 @@ def check_for_updates():
         return
     mesgdcrt.SectionMessage("Checking for updates")
     fver = requests.get(
-        "https://raw.githubusercontent.com/TheSpeedX/TBomb/master/.version"
+        "https://raw.githubusercontent.com/yogeshpcte/blast/master/.version"
     ).text.strip()
     if fver != __VERSION__:
         mesgdcrt.WarningMessage("An update is available")
         mesgdcrt.GeneralMessage("Starting update...")
         update()
     else:
-        mesgdcrt.SuccessMessage("TBomb is up-to-date")
-        mesgdcrt.GeneralMessage("Starting TBomb")
+        mesgdcrt.SuccessMessage("blast is up-to-date")
+        mesgdcrt.GeneralMessage("Starting blast")
 
 
 def notifyen():
     try:
         if DEBUG_MODE:
-            url = "https://github.com/TheSpeedX/TBomb/raw/dev/.notify"
+            url = "https://github.com/yogeshpcte/blast/raw/dev/.notify"
         else:
-            url = "https://github.com/TheSpeedX/TBomb/raw/master/.notify"
+            url = "https://github.com/yogeshpcte/blast/raw/master/.notify"
         noti = requests.get(url).text.upper()
         if len(noti) > 10:
             mesgdcrt.SectionMessage("NOTIFICATION: " + noti)
@@ -219,16 +218,6 @@ def get_phone_info():
         return (cc, target)
 
 
-def get_mail_info():
-    mail_regex = r'^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
-    while True:
-        target = input(mesgdcrt.CommandMessage("Enter target mail: "))
-        if not re.search(mail_regex, target, re.IGNORECASE):
-            mesgdcrt.WarningMessage(
-                "The mail ({target})".format(target=target) +
-                " that you have entered is invalid")
-            continue
-        return target
 
 
 def pretty_print(cc, target, success, failed):
@@ -242,7 +231,7 @@ def pretty_print(cc, target, success, failed):
     mesgdcrt.GeneralMessage("Failed       : " + str(failed))
     mesgdcrt.WarningMessage(
         "This tool was made for fun and research purposes only")
-    mesgdcrt.SuccessMessage("TBomb was created by SpeedX")
+    mesgdcrt.SuccessMessage("blast was created by yogesh")
 
 
 def workernode(mode, cc, target, count, delay, max_threads):
@@ -309,14 +298,12 @@ def selectnode(mode="sms"):
         check_for_updates()
         notifyen()
 
-        max_limit = {"sms": 500, "call": 15, "mail": 200}
+        max_limit = {"sms": 500}
         cc, target = "", ""
-        if mode in ["sms", "call"]:
+        if mode in ["sms"]:
             cc, target = get_phone_info()
             if cc != "91":
                 max_limit.update({"sms": 100})
-        elif mode == "mail":
-            target = get_mail_info()
         else:
             raise KeyboardInterrupt
 
@@ -356,9 +343,7 @@ def selectnode(mode="sms"):
                 print()
 
         workernode(mode, cc, target, count, delay, max_threads)
-    except KeyboardInterrupt:
-        mesgdcrt.WarningMessage("Received INTR call - Exiting...")
-        sys.exit()
+   
 
 
 mesgdcrt = MessageDecorator("icon")
@@ -373,7 +358,7 @@ except FileNotFoundError:
 
 
 __VERSION__ = get_version()
-__CONTRIBUTORS__ = ['SpeedX', 't0xic0der', 'scpketer', 'Stefan']
+__CONTRIBUTORS__ = ['yogesh','kartik']
 
 ALL_COLORS = [Fore.GREEN, Fore.RED, Fore.YELLOW, Fore.BLUE,
               Fore.MAGENTA, Fore.CYAN, Fore.WHITE]
@@ -382,28 +367,27 @@ RESET_ALL = Style.RESET_ALL
 ASCII_MODE = False
 DEBUG_MODE = False
 
-description = """TBomb - Your Friendly Spammer Application
-
+description = """blast - Your Friendly Spammer Application
 TBomb can be used for many purposes which incudes -
 \t Exposing the vulnerable APIs over Internet
 \t Friendly Spamming
 \t Testing Your Spam Detector and more ....
-
-TBomb is not intented for malicious uses.
+blast is not intented for malicious uses.
 """
 
 parser = argparse.ArgumentParser(description=description,
-                                 epilog='Coded by Yogesh !!!')
+                                 epilog='Coded by yogesh !!!')
 parser.add_argument("-sms", "--sms", action="store_true",
-                    help="start TBomb with SMS Bomb mode")
+                    help="start blast with SMS Bomb mode")
+
 parser.add_argument("-ascii", "--ascii", action="store_true",
                     help="show only characters of standard ASCII set")
 parser.add_argument("-u", "--update", action="store_true",
-                    help="update TBomb")
+                    help="update blast")
 parser.add_argument("-c", "--contributors", action="store_true",
-                    help="show current TBomb contributors")
+                    help="show current blast contributors")
 parser.add_argument("-v", "--version", action="store_true",
-                    help="show current TBomb version")
+                    help="show current blast version")
 
 
 if __name__ == "__main__":
@@ -422,7 +406,7 @@ if __name__ == "__main__":
     else:
         choice = ""
         avail_choice = {
-            "1": "SMS"
+            "1": "SMS",
         }
         try:
             while (choice not in avail_choice):
