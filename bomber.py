@@ -113,7 +113,7 @@ def do_zip_update():
         except Exception:
             mesgdcrt.FailureMessage("Error occured while extracting !!")
     if success:
-        mesgdcrt.SuccessMessage("blast was updated to the latest version")
+        mesgdcrt.SuccessMessage("TBomb was updated to the latest version")
         mesgdcrt.GeneralMessage(
             "Please run the script again to load the latest version")
     else:
@@ -218,6 +218,16 @@ def get_phone_info():
         return (cc, target)
 
 
+def get_mail_info():
+    mail_regex = r'^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
+    while True:
+        target = input(mesgdcrt.CommandMessage("Enter target mail: "))
+        if not re.search(mail_regex, target, re.IGNORECASE):
+            mesgdcrt.WarningMessage(
+                "The mail ({target})".format(target=target) +
+                " that you have entered is invalid")
+            continue
+        return target
 
 
 def pretty_print(cc, target, success, failed):
@@ -231,7 +241,7 @@ def pretty_print(cc, target, success, failed):
     mesgdcrt.GeneralMessage("Failed       : " + str(failed))
     mesgdcrt.WarningMessage(
         "This tool was made for fun and research purposes only")
-    mesgdcrt.SuccessMessage("blast was created by yogesh")
+    mesgdcrt.SuccessMessage("TBomb was created by SpeedX")
 
 
 def workernode(mode, cc, target, count, delay, max_threads):
@@ -298,12 +308,14 @@ def selectnode(mode="sms"):
         check_for_updates()
         notifyen()
 
-        max_limit = {"sms": 500}
+        max_limit = {"sms": 500, "call": 15, "mail": 200}
         cc, target = "", ""
-        if mode in ["sms"]:
+        if mode in ["sms", "call"]:
             cc, target = get_phone_info()
             if cc != "91":
                 max_limit.update({"sms": 100})
+        elif mode == "mail":
+            target = get_mail_info()
         else:
             raise KeyboardInterrupt
 
@@ -343,7 +355,9 @@ def selectnode(mode="sms"):
                 print()
 
         workernode(mode, cc, target, count, delay, max_threads)
-   
+    except KeyboardInterrupt:
+        mesgdcrt.WarningMessage("Received INTR call - Exiting...")
+        sys.exit()
 
 
 mesgdcrt = MessageDecorator("icon")
@@ -379,7 +393,10 @@ parser = argparse.ArgumentParser(description=description,
                                  epilog='Coded by yogesh !!!')
 parser.add_argument("-sms", "--sms", action="store_true",
                     help="start blast with SMS Bomb mode")
-
+parser.add_argument("-call", "--call", action="store_true",
+                    help="start blast with CALL Bomb mode")
+parser.add_argument("-mail", "--mail", action="store_true",
+                    help="start blast with MAIL Bomb mode")
 parser.add_argument("-ascii", "--ascii", action="store_true",
                     help="show only characters of standard ASCII set")
 parser.add_argument("-u", "--update", action="store_true",
@@ -401,12 +418,18 @@ if __name__ == "__main__":
         print("Contributors: ", " ".join(__CONTRIBUTORS__))
     elif args.update:
         update()
+    elif args.mail:
+        selectnode(mode="mail")
+    elif args.call:
+        selectnode(mode="call")
     elif args.sms:
         selectnode(mode="sms")
     else:
         choice = ""
         avail_choice = {
             "1": "SMS",
+            "2": "CALL",
+            "3": "MAIL"
         }
         try:
             while (choice not in avail_choice):
